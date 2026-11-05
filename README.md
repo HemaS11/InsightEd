@@ -286,7 +286,7 @@ InsightEd reflects a focused effort to create a student-centered academic analyt
 This project is suitable for academic submission, hackathon presentation, and GitHub portfolio showcase.
 
 - Project: InsightEd
-- Role: Member 1 – Frontend Development & Analytics
+- Role: Hema S – Frontend Development & Analytics
 - Focus: React, TypeScript, UI/UX, analytics dashboard, course feedback interface
 
 ---
