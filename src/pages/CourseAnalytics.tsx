@@ -1,9 +1,6 @@
 
 import { useEffect, useState } from 'react';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
-
 interface Course {
   course_name: string;
   instructor_name: string;
@@ -11,7 +8,9 @@ interface Course {
   average_rating: number;
 }
 
-function CourseAnalytics() {
+import { getCourseAnalytics } from '../services/api';
+
+function CourseAnalytics({ token }: { token?: string }) {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,14 +18,8 @@ function CourseAnalytics() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/analytics/courses`);
-
-        if (!response.ok) {
-          throw new Error('Could not load course analytics.');
-        }
-
-        const data = await response.json();
-        setCourses(data);
+        const response = await getCourseAnalytics(token);
+        setCourses(response);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Something went wrong.'
@@ -37,7 +30,7 @@ function CourseAnalytics() {
     };
 
     fetchCourses();
-  }, []);
+  }, [token]);
 
   const totalFeedback = courses.reduce(
     (total, course) => total + course.total_feedback,

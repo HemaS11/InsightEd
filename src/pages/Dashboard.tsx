@@ -43,7 +43,15 @@ const COLORS = {
   negative: '#5B4632',
 };
 
-export default function Dashboard() {
+interface DashboardProps {
+  token?: string;
+  userName?: string;
+}
+
+export default function Dashboard({
+  token,
+  userName,
+}: DashboardProps) {
   // Backend data
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
 
@@ -68,9 +76,9 @@ export default function Dashboard() {
           coursesResult,
           sentimentResult,
         ] = await Promise.all([
-          getAnalytics(),
-          getCourseAnalytics(),
-          getSentimentAnalytics(),
+          getAnalytics(token),
+          getCourseAnalytics(token),
+          getSentimentAnalytics(token),
         ]);
 
         setAnalytics(analyticsResult);
@@ -249,8 +257,7 @@ export default function Dashboard() {
           <span className="eyebrow">
             ACADEMIC OVERVIEW · 2026
           </span>
-
-          <h1>Good morning, Admin.</h1>
+          <h1>Good morning, {userName}.</h1>
 
           <p>
             Here's what's happening across your academic ecosystem.

@@ -1,19 +1,13 @@
 
 import { useEffect, useState } from 'react';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+import { getAllFeedback, type FeedbackResponse } from '../services/api';
 
-interface Feedback {
-  id: number;
-  course_name: string;
-  instructor_name: string;
-  rating: number;
-  comment: string;
-  sentiment?: string;
-}
+type Feedback = FeedbackResponse & {
+  sentiment?: string | null;
+};
 
-function Recommendations() {
+function Recommendations({ token }: { token?: string }) {
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,9 +15,8 @@ function Recommendations() {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/feedback`);
-        if (!response.ok) throw new Error('Could not load feedback.');
-        setFeedback(await response.json());
+        const response = await getAllFeedback(token);
+        setFeedback(response);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong.');
       } finally {

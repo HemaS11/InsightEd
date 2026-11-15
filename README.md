@@ -1,222 +1,116 @@
-# InsightEd – AI-Powered Course Feedback Analyzer
+# InsightEd
 
-<div align="center">
+InsightEd is a role-aware academic intelligence platform for collecting student feedback, analyzing course sentiment, and presenting actionable reports for students, faculty, and administrators.
 
-![InsightEd Banner](https://img.shields.io/badge/InsightEd-AI%20Powered%20Academic%20Feedback%20Analyzer-%235B4632?style=for-the-badge&logo=react&logoColor=white)
+## Features
 
-</div>
+- Student feedback form with star ratings and written comments
+- JWT-based authentication and role-based permissions
+- Student-only feedback history and submission tracking
+- Faculty/admin analytics for ratings, sentiment, course summaries, and trends
+- Topic insights, recommendations, and CSV reports
+- Admin user account management for faculty and student roles
+- Existing design preserved with the warm academic dashboard styling
 
-<p align="center">
-  <img src="public/InsightEd Academic Growth Logo.png" alt="InsightEd Logo" width="180" />
-</p>
+## Stack
 
-<p align="center">
-  <strong>Transforming student voices into smarter academic decisions.</strong>
-</p>
+- Frontend: React + TypeScript + Vite
+- Backend: FastAPI + SQLAlchemy + SQLite
+- Authentication: JWT + Bearer auth
+- AI / sentiment: TextBlob-based sentiment analysis
 
----
-
-## Overview
-
-InsightEd is an AI-powered academic feedback analysis platform designed to collect and interpret student feedback, evaluate course performance, and generate actionable insights to improve teaching quality, course delivery, and overall student satisfaction.
-
-The system focuses on bringing clarity to academic decision-making by combining student sentiment analysis, course analytics, and a polished dashboard experience for administrators and educators.
-
----
-
-## Project Objectives
-
-- Collect structured course feedback from students.
-- Analyze teaching quality, course satisfaction, and sentiment trends.
-- Visualize academic performance in a clear and actionable way.
-- Support informed decision-making for faculty and academic teams.
-- Deliver a premium, responsive frontend experience for dashboard-driven analytics.
-- Promote student engagement through a user-friendly feedback workflow.
-
----
-
-## Team Role
-
-### Member 1 – Frontend Development & Analytics
-
-I contributed primarily to the frontend architecture, UI design, analytics dashboard, and the feedback experience of the platform.
-
-My responsibilities included:
-
-1. Frontend Development
-   - Built the user interface using React, TypeScript and Vite.
-   - Designed a responsive and premium dashboard layout.
-   - Created reusable UI components for the analytics experience.
-   - Implemented sidebar navigation and top navigation.
-   - Integrated the official InsightEd brand logo into the application.
-
-2. Dashboard Development
-   - Developed stat cards for total feedback, average rating, sentiment and course review summaries.
-   - Displayed reporting metrics in a professional academic dashboard.
-   - Integrated course-performance visualizations for academic review.
-   - Added interactive charts using Recharts.
-   - Designed academic overview and analytics sections for institutional insight.
-
-3. Feedback Interface
-   - Built the student feedback submission flow.
-   - Implemented semester selection from Semester 1 to Semester 8.
-   - Created semester-specific subject dropdowns.
-   - Ensured subject lists are unique and do not repeat across semesters.
-   - Added star-rating input, comment sections and anonymous feedback options.
-   - Implemented validation logic and submission confirmation states.
-
-4. UI/UX Design
-   - Used Framer Motion for smooth transitions and subtle interaction feedback.
-   - Designed a premium academic SaaS aesthetic using a warm earthy palette.
-   - Applied consistent spacing, typography and hierarchy across the app.
-   - Used Lucide React icons to improve interface clarity and consistency.
-
-> This section reflects the frontend and analytics responsibilities carried out by Member 1. Backend and AI/ML responsibilities are not claimed here unless they were implemented and verified.
-
----
-
-## Features Developed by Member 1
-
-- Premium responsive dashboard layout
-- Sidebar navigation system
-- Top navigation and workspace header
-- Reusable stat cards and analytics panels
-- Sentiment distribution visualizations
-- Course performance charts
-- Feedback activity tracking charts
-- Student feedback form with validation
-- Semester-wise subject selection
-- Subject mapping across eight academic semesters
-- Anonymous submission support
-- Motion enhancements and premium UI polish
-
----
-
-## Technology Stack
-
-<div align="center">
-
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
-![Recharts](https://img.shields.io/badge/Recharts-FF7F50?style=for-the-badge&logo=bar-chart&logoColor=white)
-![Lucide](https://img.shields.io/badge/Lucide-React-5B4632?style=for-the-badge&logo=lucide&logoColor=white)
-
-</div>
-
-### Core Stack
-- React
-- TypeScript
-- Vite
-- CSS3
-- Framer Motion
-- Recharts
-- Lucide React
-
----
-
-## Design Palette
-
-The interface uses a premium academic palette designed to reflect an intelligent and modern higher-education platform.
-
-- Mocha Brown: `#5B4632`
-- Champagne: `#F4D9A0`
-- Burnt Orange: `#C8792C`
-- Warm Ivory: `#FFF9F0`
-- White: `#FFFFFF`
-
----
-
-## Project Structure
+## Project layout
 
 ```text
 insighted/
-├── public/
-│   └── InsightEd Academic Growth Logo.png
+├── Backend/
+│   ├── auth.py
+│   ├── create_admin.py
+│   ├── create_test_users.py
+│   ├── database.py
+│   ├── main.py
+│   ├── models.py
+│   ├── requirements.txt
+│   ├── schemas.py
+│   ├── sentiment.py
+│   └── feedbackiq.db
 ├── src/
-│   ├── App.css
 │   ├── App.tsx
-│   ├── index.css
-│   ├── main.tsx
-│   ├── assets/
+│   ├── App.css
 │   ├── components/
-│   │   ├── Navbar.tsx
-│   │   ├── Sidebar.tsx
-│   │   └── StatCard.tsx
-│   ├── data/
 │   ├── pages/
-│   │   ├── Dashboard.tsx
-│   │   ├── Feedback.tsx
-│   │   ├── Recommendations.tsx
-│   │   ├── Reports.tsx
-│   │   ├── Sentiment.tsx
-│   │   └── TopicInsights.tsx
 │   └── services/
-├── .gitignore
-├── eslint.config.js
+├── .env.example
 ├── index.html
 ├── package.json
-├── README.md
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
 ├── vite.config.ts
-└── package-lock.json
+├── README.md
+└── public/
 ```
 
----
+## Environment setup
 
-## Installation and Setup
-
-1. Clone the repository:
+1. Copy the example environment file:
 
 ```bash
-git clone https://github.com/your-username/insighted.git
-cd insighted
+cp .env.example .env
 ```
 
-2. Install dependencies:
+2. Set a production-safe JWT secret before deployment:
 
 ```bash
-npm install
+JWT_SECRET_KEY=your-long-random-secret
 ```
 
-3. Start the development server:
+For local development, the backend falls back to a development secret if the environment variable is not set, but production should always use a strong environment value.
+
+## Backend setup
 
 ```bash
-npm run dev
+cd Backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+export JWT_SECRET_KEY="change-me-in-production"
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-4. Open the project in the browser:
+## Frontend setup
 
-```bash
-http://localhost:5173/
-```
-
----
-
-## Running the Frontend Locally
-
-Use the following commands to run the project on your machine:
+From the repo root:
 
 ```bash
 npm install
 npm run dev
 ```
 
-For a production build:
+The frontend expects the API at `http://127.0.0.1:8000` by default. If you need a different base URL, set:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+## Backend verification
+
+A live verification script is included at `Backend/test_permissions.py`. It exercises role-based access for admin, faculty, and student accounts.
+
+```bash
+cd Backend
+JWT_SECRET_KEY="change-me-in-production" ./venv/bin/python test_permissions.py
+```
+
+## Build
 
 ```bash
 npm run build
 ```
 
-To preview the production build:
+## Production notes
 
-```bash
-npm run preview
-```
+- Use a strong `JWT_SECRET_KEY` outside local development.
+- Keep SQLite data in a persistent volume if you deploy the backend in production.
+- Allow only trusted frontend origins in CORS for deployed environments.
+- Prefer a managed deployment for the backend and a production-grade reverse proxy in front of the API.
 
 ---
 

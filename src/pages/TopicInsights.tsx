@@ -1,17 +1,11 @@
 
 import { useEffect, useState } from 'react';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+import { getAllFeedback, type FeedbackResponse } from '../services/api';
 
-interface Feedback {
-  id: number;
-  course_name: string;
-  instructor_name: string;
-  rating: number;
-  comment: string;
-  sentiment?: string;
-}
+type Feedback = FeedbackResponse & {
+  sentiment?: string | null;
+};
 
 const topics = [
   {
@@ -36,33 +30,39 @@ const topics = [
   },
 ];
 
-function TopicInsights() {
+function TopicInsights({ token }: { token?: string }) {
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchFeedback = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/feedback`);
-
-        if (!response.ok) {
-          throw new Error('Could not load feedback.');
+        const result = await getAllFeedback(token);
+        if (isMounted) {
+          setFeedback(result);
         }
-
-        const result = await response.json();
-        setFeedback(result);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Something went wrong.'
-        );
+        if (isMounted) {
+          setError(
+            err instanceof Error ? err.message : 'Something went wrong.'
+          );
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchFeedback();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
 
   const topicCounts = topics.map((topic) => {
     const matchingFeedback = feedback.filter((item) => {

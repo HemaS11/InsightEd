@@ -40,23 +40,50 @@ export interface SentimentAnalytics {
   neutral: number;
 }
 
-async function apiRequest<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`);
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
+function authHeaders(token?: string): HeadersInit {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    (headers as Record<string, string>)['Authorization'] = 'Bearer ' + token;
+  }
+
+  return headers;
+}
+
+async function apiRequest<T>(
+  endpoint: string,
+  options?: { method?: string; body?: unknown; token?: string },
+): Promise<T> {
+  const response = await fetch(API_BASE_URL + endpoint, {
+    method: options?.method || 'GET',
+    headers: authHeaders(options?.token),
+    body: options?.body ? JSON.stringify(options.body) : undefined,
+  });
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(error || `Request failed: ${response.status}`);
+    throw new Error(error || 'Request failed: ' + response.status);
   }
 
   return response.json();
 }
 
-export async function submitFeedback(data: FeedbackData) {
-  const response = await fetch(`${API_BASE_URL}/feedback`, {
+export async function submitFeedback(
+  data: FeedbackData,
+  token?: string,
+): Promise<FeedbackResponse> {
+  const response = await fetch(API_BASE_URL + '/feedback', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: authHeaders(token),
     body: JSON.stringify(data),
   });
 
@@ -68,18 +95,33 @@ export async function submitFeedback(data: FeedbackData) {
   return response.json() as Promise<FeedbackResponse>;
 }
 
-export function getAnalytics() {
-  return apiRequest<AnalyticsData>('/analytics');
+export function getAnalytics(token?: string) {
+  return apiRequest<AnalyticsData>('/analytics', { token });
 }
 
-export function getCourseAnalytics() {
-  return apiRequest<CourseAnalytics[]>('/analytics/courses');
+export function getCourseAnalytics(token?: string) {
+  return apiRequest<CourseAnalytics[]>('/analytics/courses', { token });
 }
 
-export function getSentimentAnalytics() {
-  return apiRequest<SentimentAnalytics[]>('/analytics/sentiment');
+export function getSentimentAnalytics(token?: string) {
+  return apiRequest<SentimentAnalytics[]>('/analytics/sentiment', { token });
 }
 
-export function getAllFeedback() {
-  return apiRequest<FeedbackResponse[]>('/feedback');
+export function getAllFeedback(token?: string) {
+  return apiRequest<FeedbackResponse[]>('/feedback', { token });
+}
+
+export function getAdminUsers(token?: string) {
+  return apiRequest<User[]>('/admin/users', { token });
+}
+
+export function createAdminUser(
+  data: { name: string; email: string; password: string; role: 'student' | 'faculty' },
+  token?: string,
+) {
+  return apiRequest<User>('/admin/users', {
+    method: 'POST',
+    body: data,
+    token,
+  });
 }
