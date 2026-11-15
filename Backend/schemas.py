@@ -37,3 +37,33 @@ class SentimentResponse(BaseModel):
     sentiment: str
     sentiment_score: float
     explanation: Optional[str] = None
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class UserCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    email: str
+    password: str = Field(min_length=12, max_length=72)
+    role: str
+
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+    role: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
+class RegisterRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    email: str
+    password: str = Field(min_length=12, max_length=72)
+    role: str

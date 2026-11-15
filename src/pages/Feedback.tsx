@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Star,
   Send,
@@ -7,9 +7,9 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
-import { submitFeedback } from '../services/api';
+import { getAllFeedback, submitFeedback, type FeedbackResponse } from '../services/api';
 
-export default function Feedback() {
+export default function Feedback({ token }: { token?: string }) {
   const [rating, setRating] = useState(0);
   const [teaching, setTeaching] = useState(0);
   const [content, setContent] = useState(0);
@@ -23,6 +23,20 @@ export default function Feedback() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [history, setHistory] = useState<FeedbackResponse[]>([]);
+
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const result = await getAllFeedback(token);
+        setHistory(result);
+      } catch {
+        setHistory([]);
+      }
+    };
+
+    loadHistory();
+  }, [token]);
 
   const Rating = ({
     value,
@@ -74,13 +88,17 @@ export default function Feedback() {
         ((rating + teaching + content + practical) / 4).toFixed(2)
       );
 
-      await submitFeedback({
-        course_name: course,
-        instructor_name: instructor.trim(),
-        rating: averageRating,
-        comment: comment.trim(),
-      });
+      const created = await submitFeedback(
+        {
+          course_name: course,
+          instructor_name: instructor.trim(),
+          rating: averageRating,
+          comment: comment.trim(),
+        },
+        token,
+      );
 
+      setHistory((current) => [created, ...current]);
       setSubmitted(true);
     } catch (err) {
       setError(
@@ -124,166 +142,158 @@ export default function Feedback() {
 
           <p>Your response has been successfully submitted.</p>
 
-          <button
-            className="submit-button"
-            onClick={resetForm}
-          >
+          <button className="submit-button" onClick={resetForm}>
             Submit another response
           </button>
         </div>
       ) : (
-        <form
-          className="feedback-form"
-          onSubmit={handleSubmit}
-        >
-          <div className="form-heading">
-            <div className="form-icon">
-              <MessageSquare />
+        <>
+          <form className="feedback-form" onSubmit={handleSubmit}>
+            <div className="form-heading">
+              <div className="form-icon">
+                <MessageSquare />
+              </div>
+
+              <div>
+                <h2>Course feedback form</h2>
+                <p>All feedback should be honest and constructive.</p>
+              </div>
             </div>
 
-            <div>
-              <h2>Course feedback form</h2>
-              <p>
-                All feedback should be honest and constructive.
-              </p>
+            <div className="form-grid">
+              <label>
+                Select course
+                <select value={course} onChange={(e) => setCourse(e.target.value)}>
+                  <option>Data Structures</option>
+                  <option>Database Management Systems</option>
+                  <option>Computer Networks</option>
+                  <option>Artificial Intelligence</option>
+                  <option>Java Programming</option>
+                </select>
+              </label>
+
+              <label>
+                Academic semester
+                <select value={semester} onChange={(e) => setSemester(e.target.value)}>
+                  <option>Semester 1</option>
+                  <option>Semester 2</option>
+                  <option>Semester 3</option>
+                  <option>Semester 4</option>
+                  <option>Semester 5</option>
+                  <option>Semester 6</option>
+                  <option>Semester 7</option>
+                  <option>Semester 8</option>
+                </select>
+              </label>
+
+              <label>
+                Instructor name
+                <input
+                  type="text"
+                  value={instructor}
+                  onChange={(e) => setInstructor(e.target.value)}
+                  placeholder="Enter instructor name"
+                  required
+                />
+              </label>
             </div>
-          </div>
 
-          <div className="form-grid">
-            <label>
-              Select course
+            <div className="rating-section">
+              <h3>Rate your learning experience</h3>
+              <p>Choose a rating between 1 and 5 stars.</p>
 
-              <select
-                value={course}
-                onChange={(e) => setCourse(e.target.value)}
-              >
-                <option>Data Structures</option>
-                <option>Database Management Systems</option>
-                <option>Computer Networks</option>
-                <option>Artificial Intelligence</option>
-                <option>Java Programming</option>
-              </select>
-            </label>
+              <div className="rating-row">
+                <div>
+                  <strong>Teaching quality</strong>
+                  <span>How clearly are concepts explained?</span>
+                </div>
 
-            <label>
-              Academic semester
+                <Rating value={teaching} onChange={setTeaching} />
+              </div>
 
-              <select
-                value={semester}
-                onChange={(e) => setSemester(e.target.value)}
-              >
-                <option>Semester 1</option>
-                <option>Semester 2</option>
-                <option>Semester 3</option>
-                <option>Semester 4</option>
-                <option>Semester 5</option>
-                <option>Semester 6</option>
-                <option>Semester 7</option>
-                <option>Semester 8</option>
-              </select>
-            </label>
+              <div className="rating-row">
+                <div>
+                  <strong>Course content</strong>
+                  <span>How relevant is the syllabus?</span>
+                </div>
 
-            <label>
-              Instructor name
+                <Rating value={content} onChange={setContent} />
+              </div>
 
-              <input
-                type="text"
-                value={instructor}
-                onChange={(e) => setInstructor(e.target.value)}
-                placeholder="Enter instructor name"
+              <div className="rating-row">
+                <div>
+                  <strong>Practical sessions</strong>
+                  <span>How useful are the lab sessions?</span>
+                </div>
+
+                <Rating value={practical} onChange={setPractical} />
+              </div>
+
+              <div className="rating-row">
+                <div>
+                  <strong>Overall satisfaction</strong>
+                  <span>How satisfied are you with this course?</span>
+                </div>
+
+                <Rating value={rating} onChange={setRating} />
+              </div>
+            </div>
+
+            <label className="comment-label">
+              Your written feedback
+              <textarea
+                rows={5}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Share what you liked, what can be improved, and your suggestions..."
                 required
               />
             </label>
+
+            <div className="anonymous-note">
+              <CheckCircle size={17} />
+              Your feedback is intended to be anonymous.
+            </div>
+
+            {error && <p className="error-message">{error}</p>}
+
+            <button type="submit" className="submit-button" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit feedback'}
+              <Send size={17} />
+            </button>
+          </form>
+
+          <div className="panel" style={{ marginTop: 20 }}>
+            <div className="panel-heading">
+              <h2>Your feedback history</h2>
+            </div>
+
+            {history.length === 0 ? (
+              <p>No feedback submitted yet.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {history.map((item) => (
+                  <div key={item.id} className="panel" style={{ padding: 16 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        alignItems: 'center',
+                        marginBottom: 8,
+                      }}
+                    >
+                      <strong>{item.course_name}</strong>
+                      <span>{Number(item.rating).toFixed(1)} / 5</span>
+                    </div>
+                    <p style={{ marginBottom: 8 }}>{item.instructor_name}</p>
+                    <p>{item.comment}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-
-          <div className="rating-section">
-            <h3>Rate your learning experience</h3>
-
-            <p>Choose a rating between 1 and 5 stars.</p>
-
-            <div className="rating-row">
-              <div>
-                <strong>Teaching quality</strong>
-                <span>
-                  How clearly are concepts explained?
-                </span>
-              </div>
-
-              <Rating
-                value={teaching}
-                onChange={setTeaching}
-              />
-            </div>
-
-            <div className="rating-row">
-              <div>
-                <strong>Course content</strong>
-                <span>How relevant is the syllabus?</span>
-              </div>
-
-              <Rating
-                value={content}
-                onChange={setContent}
-              />
-            </div>
-
-            <div className="rating-row">
-              <div>
-                <strong>Practical sessions</strong>
-                <span>How useful are the lab sessions?</span>
-              </div>
-
-              <Rating
-                value={practical}
-                onChange={setPractical}
-              />
-            </div>
-
-            <div className="rating-row">
-              <div>
-                <strong>Overall satisfaction</strong>
-                <span>
-                  How satisfied are you with this course?
-                </span>
-              </div>
-
-              <Rating
-                value={rating}
-                onChange={setRating}
-              />
-            </div>
-          </div>
-
-          <label className="comment-label">
-            Your written feedback
-
-            <textarea
-              rows={5}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Share what you liked, what can be improved, and your suggestions..."
-              required
-            />
-          </label>
-
-          <div className="anonymous-note">
-            <CheckCircle size={17} />
-            Your feedback is intended to be anonymous.
-          </div>
-
-          {error && (
-            <p className="error-message">{error}</p>
-          )}
-
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit feedback'}
-            <Send size={17} />
-          </button>
-        </form>
+        </>
       )}
     </div>
   );

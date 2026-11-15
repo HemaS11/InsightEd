@@ -1,8 +1,7 @@
 
 import { useEffect, useState } from 'react';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+import { getSentimentAnalytics } from '../services/api';
 
 interface SentimentData {
   course_name: string;
@@ -12,7 +11,7 @@ interface SentimentData {
   neutral: number;
 }
 
-function Sentiment() {
+function Sentiment({ token }: { token?: string }) {
   const [data, setData] = useState<SentimentData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -20,13 +19,7 @@ function Sentiment() {
   useEffect(() => {
     const fetchSentiment = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/analytics/sentiment`);
-
-        if (!response.ok) {
-          throw new Error('Could not load sentiment data.');
-        }
-
-        const result = await response.json();
+        const result = await getSentimentAnalytics(token);
         setData(result);
       } catch (err) {
         setError(
@@ -38,7 +31,7 @@ function Sentiment() {
     };
 
     fetchSentiment();
-  }, []);
+  }, [token]);
 
   const positive = data.reduce((sum, item) => sum + item.positive, 0);
   const negative = data.reduce((sum, item) => sum + item.negative, 0);

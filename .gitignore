@@ -30,4 +30,18 @@ venv/
 .env
 
 # Database
+*.db*.db
+*.db-*
+*.sqlite
+*.sqlite3
+
 *.db
+*.db-*
+*.sqlite
+*.sqlite3
+
+# Local test and backup scripts
+Backend/create_test_users.py
+Backend/test_permissions.py
+Backend/main_backup.py
+Backend/schemas_backup.py
