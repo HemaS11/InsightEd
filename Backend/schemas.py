@@ -4,6 +4,7 @@ from typing import Optional
 from datetime import datetime
 
 
+# Schema for creating new feedback
 class FeedbackCreate(BaseModel):
     course_name: str = Field(min_length=1, max_length=200)
     instructor_name: str = Field(min_length=1, max_length=200)
@@ -13,6 +14,7 @@ class FeedbackCreate(BaseModel):
     comment: str = Field(min_length=1)
 
 
+# Schema for returning feedback data
 class FeedbackResponse(BaseModel):
     id: int
 
@@ -30,6 +32,7 @@ class FeedbackResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# Schema for sentiment analysis response
 class SentimentResponse(BaseModel):
     sentiment: str
     sentiment_score: float

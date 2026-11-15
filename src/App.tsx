@@ -7,6 +7,11 @@ import Navbar from './components/Navbar';
 
 import Dashboard from './pages/Dashboard';
 import Feedback from './pages/Feedback';
+import CourseAnalytics from './pages/CourseAnalytics';
+import Sentiment from './pages/Sentiment';
+import TopicInsights from './pages/TopicInsights';
+import Recommendations from './pages/Recommendations';
+import Reports from './pages/Reports';
 
 import './App.css';
 
@@ -28,44 +33,19 @@ function App() {
         return <Feedback />;
 
       case 'Course Analytics':
-        return (
-          <div className="page-placeholder">
-            <h1>Course Analytics</h1>
-            <p>Course performance analytics coming soon.</p>
-          </div>
-        );
+        return <CourseAnalytics />;
 
       case 'Sentiment Analysis':
-        return (
-          <div className="page-placeholder">
-            <h1>Sentiment Analysis</h1>
-            <p>AI sentiment analysis coming soon.</p>
-          </div>
-        );
+        return <Sentiment />;
 
       case 'Topic Insights':
-        return (
-          <div className="page-placeholder">
-            <h1>Topic Insights</h1>
-            <p>Topic analysis coming soon.</p>
-          </div>
-        );
+        return <TopicInsights />;
 
       case 'Recommendations':
-        return (
-          <div className="page-placeholder">
-            <h1>Recommendations</h1>
-            <p>AI recommendations coming soon.</p>
-          </div>
-        );
+        return <Recommendations />;
 
       case 'Reports':
-        return (
-          <div className="page-placeholder">
-            <h1>Reports</h1>
-            <p>Reports and downloads coming soon.</p>
-          </div>
-        );
+        return <Reports />;
 
       default:
         return <Dashboard />;
