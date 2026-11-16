@@ -68,15 +68,18 @@ Dependency versions and frontend commands are defined in [`package.json`](./pack
 The browser application makes JSON requests to the FastAPI backend. The backend validates requests, applies authentication and role checks, reads and writes SQLite records through SQLAlchemy, and computes sentiment when feedback is submitted.
 
 ```mermaid
+
 flowchart LR
-    U[Student, faculty, or admin] -->|Browser| FE[React + TypeScript frontend<br/>Vite / Vercel]
-    FE -->|JSON over HTTP(S)<br/>VITE_API_BASE_URL| API[FastAPI backend<br/>Render]
-    API --> AUTH[JWT authentication<br/>role checks]
-    API --> ORM[SQLAlchemy]
-    ORM --> DB[(SQLite<br/>feedbackiq.db)]
-    API --> SENT[TextBlob polarity analysis]
+    U["Student, Faculty, or Admin"] --> B["Browser"]
+    B --> FE["React + TypeScript Frontend<br/>Vite / Vercel"]
+    FE -->|"JSON over HTTPS"| API["FastAPI Backend<br/>Render"]
+    API --> AUTH["JWT Authentication<br/>Role Checks"]
+    API --> ORM["SQLAlchemy ORM"]
+    ORM --> DB["SQLite Database"]
+    API --> SENT["TextBlob Sentiment Analysis"]
     SENT --> API
-    API -->|JSON responses| FE
+    API -->|"JSON Responses"| FE
+
 ```
 
 In local development, the frontend defaults to `http://127.0.0.1:8000` for the API. Localhost/127.0.0.1 frontend ports are allowed by the backend CORS middleware. For hosted use, set an explicit API base URL and configure the backend to allow the exact frontend origin.
